@@ -2,27 +2,42 @@
 
 import Filter from './Filter.svg'
 import Search from './search-icon.svg'
-import CloseIcon from './X.svg' // 👈 Make sure this file exists in the folder
-import { usePathname } from 'next/navigation'
-import React, { useState } from 'react'
+import CloseIcon from './X.svg'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation' // 👈 IMPORTANT IMPORTS
+import React, { useState, useEffect } from 'react' 
 import FilterMenu from './FilterMenu.js'
 
 export default function SearchBar() {
     const pathName = usePathname()
+    const searchParams = useSearchParams()
+    const { replace } = useRouter()
     
     // States
     const [isExpanded, setIsExpanded] = useState(false)
     const [showFilter, setShowFilter] = useState(false)
-    const [query, setQuery] = useState("")
+    
+    // Initialize query from URL so it doesn't disappear on refresh
+    const [query, setQuery] = useState(searchParams.get('q')?.toString() || "")
 
     // 1. Hide on non-home pages
     if (pathName !== '/') return null
 
-    // 2. Handle Text Input
+    // 2. Handle Text Input (The Wiring)
     const handleSearch = (e) => {
-        setQuery(e.target.value)
-        // This log confirms data is capturing correctly
-        console.log("Live Search Query:", e.target.value)
+        const term = e.target.value
+        setQuery(term)
+        
+        const params = new URLSearchParams(searchParams);
+        
+        if (term) {
+            params.set('q', term);
+        } else {
+            params.delete('q');
+        }
+        
+        console.log("SEARCH BAR: Updating URL to ->", `${pathName}?${params.toString()}`);
+        
+        replace(`${pathName}?${params.toString()}`, { scroll: false });
     }
 
     // 3. Reset everything when clicking outside
@@ -35,34 +50,24 @@ export default function SearchBar() {
     const toggleFilter = () => {
         const willOpen = !showFilter;
         setShowFilter(willOpen); 
-        
-        // If opening filter, ensure the bar is expanded too
         if (willOpen) setIsExpanded(true); 
     }
 
     return (
         <>
-            {/* INVISIBLE BACKDROP (Detects clicks outside) */}
+            {/* INVISIBLE BACKDROP */}
             {(isExpanded || showFilter) && (
-                <div 
-                    className="fixed inset-0 z-10" 
-                    onClick={handleClose} 
-                />
+                <div className="fixed inset-0 z-10" onClick={handleClose} />
             )}
 
             {/* MAIN SEARCH CONTAINER */}
             <div className={`absolute left-1/2 -translate-x-1/2 mt-1 z-20 transition-all duration-300 ease-out
                 ${isExpanded ? 'w-96' : 'w-64'} 
             `}>
-                
                 <div className="h-10 rounded-full bg-[#adcffe] flex justify-between items-center px-2 relative cursor-pointer min-w-0 overflow-hidden">
-                    {/* Left Icon */}
                     <img src={Search.src} alt="Search" className="w-7 shrink-0"/>
-                    
-                    {/* Center: Swap between Text and Input */}
                     <div className="flex-1 flex items-center ml-2 min-w-0">
                         {!isExpanded ? (
-                            // STATE 1: Static Text (Click to Open)
                             <div className='overflow-hidden flex items-center min-w-0 w-full'>
                             <span 
                                 onClick={() => setIsExpanded(true)}
@@ -72,9 +77,8 @@ export default function SearchBar() {
                             </span>
                             </div>
                         ) : (
-                            // STATE 2: Active Input
                             <input 
-                                autoFocus // 👈 Crucial: Types immediately
+                                autoFocus 
                                 value={query}
                                 onChange={handleSearch}
                                 className="bg-transparent border-none outline-none text-sm w-full placeholder-gray-600 font-body min-w-0" 
@@ -82,21 +86,13 @@ export default function SearchBar() {
                             />
                         )}
                     </div>
-                    
-                    {/* Right: Toggle Button (Filter <-> Close) */}
                     <button 
                         onClick={toggleFilter}
                         className="p-1 hover:bg-white/20 rounded-full transition-colors w-10 flex justify-center items-center shrink-0"
                     >
-                        {showFilter ? (
-                            <img src={CloseIcon.src} alt="Close" className="w-8 h-8"/> 
-                        ) : (
-                            <img src={Filter.src} alt="Filter" className="w-10"/>
-                        )}
+                        {showFilter ? <img src={CloseIcon.src} alt="Close" className="w-8 h-8"/> : <img src={Filter.src} alt="Filter" className="w-10"/>}
                     </button>
                 </div>
-
-                {/* Filter Menu Component */}
                 {showFilter && <FilterMenu />}
             </div>
         </>
