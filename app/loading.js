@@ -1,5 +1,5 @@
 import Navbar from "./components/Navbar/Navbar";
-import CardSkeleton from "./components/Skeletons/CardSkeleton";
+import CardSkeleton from "./components/Skeletons/CardSkeleton_small";
 
 export default function Loading() {
   return (

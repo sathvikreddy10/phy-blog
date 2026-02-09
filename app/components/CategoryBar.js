@@ -44,7 +44,7 @@ export default function CategoryBar({ categories = [] }) {
 
   return (
     // Outer Container: Changed 35% -> 20%
-    <div className="relative flex items-center w-full md:max-w-[20%] gap-2">
+    <div className="relative flex items-center max-w-[20%] gap-2">
       
       {/* Scrollable List */}
       <div 

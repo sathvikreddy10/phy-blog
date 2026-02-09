@@ -1,5 +1,8 @@
 "use client";
 
+
+// 2 md are there deklo 
+
 import React, { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { supabase } from "../../lib/supabase"; 
@@ -84,8 +87,8 @@ export default function BookmarkBtn() {
         onClick={(e) => {
             e.stopPropagation(); 
             setIsOpen(!isOpen);
-        }} 
-        className="bg-transparent border-none p-0 cursor-pointer outline-none hover:opacity-70 transition-opacity"
+        }} //set book mark animation 
+        className="bg-transparent border-none p-0 cursor-pointer outline-none"
       >
         <span className="Links_to_pages flex items-center gap-2 py-0.5 text-12">
             <img src={Bookmark.src} alt="Bookmark" /> 
@@ -94,7 +97,7 @@ export default function BookmarkBtn() {
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 md:left-auto md:right-0 top-full mt-4 w-[20rem] max-w-[85vw] bg-[#fff8f0] rounded-xl shadow-2xl border border-[#FFA443]/20 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
+        <div className="absolute left-auto right-0 top-full mt-4 w-[20rem] max-w-[85vw] bg-[#fff8f0] rounded-xl shadow-2xl border border-[#FFA443]/20 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
             
             {/* ADD CURRENT PAGE */}
             {currentBlogId && !isCurrentSaved && currentBlogTitle && (
@@ -103,7 +106,7 @@ export default function BookmarkBtn() {
                         <span className="text-[10px] font-bold text-orange-800 tracking-wider">CURRENT PAGE</span>
                         <button 
                             onClick={addBookmark}
-                            className="bg-black text-[#FFA443] text-[10px] font-bold px-2 py-1 rounded hover:opacity-80 transition-opacity"
+                            className="bg-black text-[#FFA443] text-[10px] font-bold px-2 py-1 rounded"
                         >
                             ADD +
                         </button>

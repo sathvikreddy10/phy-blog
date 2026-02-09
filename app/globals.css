@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --padding-site: 3.65rem;
 }
 
 @theme inline {
@@ -10,6 +11,7 @@
   --color-foreground: var(--foreground);
   --font-heading: var(--font-josefin);
   --font-body: var(--font-euclid);
+  --spacing-site: var(--padding-site);
  
 }
 
